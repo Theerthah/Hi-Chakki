@@ -8,6 +8,7 @@ body {
   background: #fafafa;
   color: #222;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Header & Search Bar */
@@ -39,6 +40,7 @@ header p {
 
 .bar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
   max-width: 500px;
@@ -46,7 +48,7 @@ header p {
 }
 
 #search-input {
-  flex: 1;
+  flex: 1 1 200px;
   padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -223,8 +225,15 @@ header p {
   margin: 0 0 8px;
 }
 
+/*.color-options {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}*/
+
 .color-options {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
 }
@@ -236,6 +245,7 @@ header p {
   border: 2px solid transparent;
   cursor: pointer;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .color-btn.selected {
@@ -332,9 +342,12 @@ optgroup option {
     bottom: 24px;
     right: 24px;
     border-radius: 50px;
-    padding: 14px 22px;
+    padding: 14px 18px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
     z-index: 8;
     font-size: 16px;
+  }
+  .grid {
+    margin-bottom: 90px; /* keeps last row of cards clear of the FAB */
   }
 }
