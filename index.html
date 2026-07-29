@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi Chakki</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Hi Chakki</h1>
+        <p>Independent Side Project</p>
+        <div class="bar">
+            <input type="text" id="search-input" placeholder="Search by name..."/>
+            <button class="send" id="search-btn">Search</button>
+            <button class="send" id="add-note-btn"> Leave a Message</button>
+        </div>
+    </header>
+
+    <main class="grid" id="msg-grid"></main>
+
+    <!-- Create Note Modal -->
+    <div class="modal-overlay" id="msg-modal"> 
+        <div class="modal-card">
+            <h3>Write something</h3>
+            
+            <!-- Inputs -->
+            <input type="text" id="recipient-input" placeholder="To: Chakki">
+            <input type="text" id="sender-input" placeholder="From: Anonymous">
+            
+            <label class="field-label" for="mood-select">Select Message Vibe / Intent:</label>
+            <select id="mood-select">
+                <optgroup label="💔 Heavy & Hurt">
+                    <option value="😠 Mad / Angry" data-key="angry">😠 Mad / Angry</option>
+                    <option value="😒 Jealous" data-key="jealous">😒 Jealous</option>
+                    <option value="💔 Hurt" data-key="hurt">💔 Hurt</option>
+                    <option value="🐍 Petty / Bitter" data-key="bitter">🐍 Petty / Bitter</option>
+                    <option value="😔 Disappointed" data-key="hurt">😔 Disappointed</option>
+                </optgroup>
+
+                <optgroup label="💭 Mixed & Confused">
+                    <option value="💭 Confused" data-key="confused">💭 Confused</option>
+                    <option value="🤐 Holding Back" data-key="confused">🤐 Holding Back</option>
+                    <option value="😶 Awkward" data-key="confused">😶 Awkward</option>
+                    <option value="🤨 Suspicious" data-key="confused">🤨 Suspicious</option>
+                </optgroup>
+
+                <optgroup label="🫣 Shy & Secretive">
+                    <option value="💌 Confession" data-key="love">💌 Confession</option>
+                    <option value="🫣 Shy" data-key="sweet">🫣 Shy</option>
+                    <option value="🥺 Missing You" data-key="sweet">🥺 Missing You</option>
+                </optgroup>
+
+                <optgroup label="💖 Soft & Warm">
+                    <option value="💖 Grateful" data-key="sweet">💖 Grateful</option>
+                    <option value="❤️ Sweet" data-key="sweet">❤️ Sweet</option>
+                    <option value="🫂 Supportive" data-key="sweet">🫂 Supportive</option>
+                </optgroup>
+
+                <optgroup label="😏 Playful & Drama">
+                    <option value="😏 Teasing" data-key="sweet">😏 Teasing</option>
+                    <option value="🤣 Sarcastic" data-key="confused">🤣 Sarcastic</option>
+                    <option value="👀 Gossipy / Drama" data-key="bitter">👀 Gossipy / Drama</option>
+                </optgroup>
+            </select>
+
+            <textarea id="msg-input" placeholder="Write something..."></textarea>
+            
+            <p class="color">Select Card Color</p>
+            <div class="color-options" id="color-picker">
+                <button class="color-btn selected" style="background-color:#ffb3ba;" data-color="#ffb3ba"></button>
+                <button class="color-btn" style="background-color:#bae1ff;" data-color="#bae1ff"></button>
+                <button class="color-btn" style="background-color:#baffc9;" data-color="#baffc9"></button>
+                <button class="color-btn" style="background-color:#ffffba;" data-color="#ffffba"></button>
+                <button class="color-btn" style="background-color:#e8baff;" data-color="#e8baff"></button>
+                <button class="color-btn" style="background-color:#f7946d;" data-color="#f7946d"></button>
+                <button class="color-btn" style="background-color:#f5acbb;" data-color="#F4B6C2"></button>
+                <button class="color-btn" style="background-color:#C7CEEA;" data-color="#C7CEEA"></button>
+                <button class="color-btn" style="background-color:#D4E09B;" data-color="#D4E09B"></button>
+                <button class="color-btn" style="background-color:#ecd792;" data-color="#ecd792"></button>
+                <button class="color-btn" style="background-color:#c660da;" data-color="#c660da"></button>
+                <button class="color-btn" style="background-color:#F3C5A8;" data-color="#F3C5A8"></button>
+
+            </div>
+
+            <!-- Preview Card -->
+            <div class="note-preview" id="note-preview">
+                <div class="mood-flair" id="preview-mood">😊 Happy</div>
+                <div class="recipient" id="preview-recipient">To: Chakki</div>
+                <div class="preview" id="preview-text">Your message will appear here...</div>
+                <div class="card-footer">
+                    <span id="preview-sender">From: Anonymous</span>
+                    <span id="preview-date">Today</span>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="submit" id="submit-btn">Submit</button>
+                <button class="cancel" id="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div class="modal-overlay" id="reply-modal">
+        <div class="modal-card">
+            <h3 id="reply-modal-title">Note Details</h3>
+            <div id="reply-note-display" class="note-card-full"></div>
+            
+            <h4>Replies</h4>
+            <div id="replies-list" class="replies-list"></div>
+
+            <div class="reply-input-group">
+                <input type="text" id="reply-sender-input" placeholder="Your name...">
+                <textarea id="reply-text-input" placeholder="Write a reply..."></textarea>
+                <button class="submit" id="send-reply-btn">Post Reply</button>
+                <button class="cancel" id="close-reply-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LINK ADDED HERE -->
+    <script src="script.js"></script>
+</body>
+</html>
