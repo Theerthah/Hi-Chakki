@@ -1,11 +1,34 @@
+// ===== FIREBASE SETUP =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  set,
+  onValue
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAyzziTvvEJISnG0R-3UAsG0_03UNxMcMk",
+  authDomain: "hi-chakki.firebaseapp.com",
+  databaseURL: "https://hi-chakki-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hi-chakki",
+  storageBucket: "hi-chakki.firebasestorage.app",
+  messagingSenderId: "255831399051",
+  appId: "1:255831399051:web:e9c66c5946ce07ec20928e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const notesRef = ref(db, 'notes');
+
 // ===== STORAGE =====
-let notes = JSON.parse(localStorage.getItem('hi-chakki-notes') || '[]');
+// `notes` is now populated live from Firebase (see onValue listener near the
+// bottom of this file) instead of localStorage. It stays in sync across
+// every device automatically.
+let notes = [];
 let selectedColor = '#ffb3ba';
 let currentNoteId = null; // Tracks note currently opened for reply
-
-function saveNotes() {
-  localStorage.setItem('hi-chakki-notes', JSON.stringify(notes));
-}
 
 // ===== ELEMENT REFERENCES =====
 const modal = document.getElementById('msg-modal');
@@ -89,8 +112,8 @@ document.getElementById('submit-btn').onclick = () => {
     return;
   }
 
-  notes.unshift({
-    id: Date.now(),
+  const newNoteRef = push(notesRef);
+  set(newNoteRef, {
     recipient: recipient,
     sender: sender,
     mood: mood,
@@ -100,8 +123,9 @@ document.getElementById('submit-btn').onclick = () => {
     replies: []
   });
 
-  saveNotes();
-  renderGrid(searchInput.value);
+  // No need to manually re-render — the onValue listener below will
+  // pick up this new note (on this device AND every other device) and
+  // re-render automatically.
   closeModal();
 };
 
@@ -209,16 +233,18 @@ document.getElementById('send-reply-btn').onclick = () => {
 
   const note = notes.find(n => n.id === currentNoteId);
   if (note) {
-    if (!note.replies) note.replies = [];
-    note.replies.push({
+    const existingReplies = note.replies || [];
+    const updatedReplies = [...existingReplies, {
       sender: sender,
       text: text,
       ts: Date.now()
-    });
+    }];
 
-    saveNotes();
-    renderReplies(note);
-    renderGrid(searchInput.value);
+    // Write straight to this note's replies path in Firebase.
+    set(ref(db, `notes/${currentNoteId}/replies`), updatedReplies);
+
+    // The onValue listener will re-render everything shortly, but we
+    // also clear the input right away for a snappy feel.
     document.getElementById('reply-text-input').value = '';
   }
 };
@@ -239,4 +265,22 @@ function formatDate(timestamp) {
 searchInput.oninput = () => renderGrid(searchInput.value);
 document.getElementById('search-btn').onclick = () => renderGrid(searchInput.value);
 
-renderGrid();
+// ===== LIVE SYNC FROM FIREBASE =====
+// This fires immediately with current data, then again any time the data
+// changes — on this device or any other. This is what makes notes show up
+// on every device instead of just the one that created them.
+onValue(notesRef, (snapshot) => {
+  const data = snapshot.val() || {};
+
+  notes = Object.keys(data)
+    .map(id => ({ id, ...data[id] }))
+    .sort((a, b) => b.ts - a.ts);
+
+  renderGrid(searchInput.value);
+
+  // If the reply modal is open, keep it up to date too
+  if (currentNoteId) {
+    const openNote = notes.find(n => n.id === currentNoteId);
+    if (openNote) renderReplies(openNote);
+  }
+});
